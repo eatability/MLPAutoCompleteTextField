@@ -39,7 +39,7 @@ not the original data source.
  */
 - (void)autoCompleteTextField:(MLPAutoCompleteTextField *)textField
   didSelectAutoCompleteString:(NSString *)selectedString
-       withAutoCompleteObject:(id<MLPAutoCompletionObject>)selectedObject
+       withAutoCompleteObject:(id)selectedObject
             forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void)autoCompleteTextField:(MLPAutoCompleteTextField *)textField
