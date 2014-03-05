@@ -187,12 +187,33 @@ static NSString *kDefaultAutoCompleteCellIdentifier = @"_DefaultAutoCompleteCell
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger numberOfRows = [self.autoCompleteSuggestions count];
-    [self expandAutoCompleteTableViewForNumberOfRows:numberOfRows];
+     [self expandAutoCompleteTableViewForNumberOfRows:numberOfRows];
+    if (numberOfRows==0) {
+        numberOfRows++;
+    }
     return numberOfRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    
+    if (self.autoCompleteSuggestions==nil||self.autoCompleteSuggestions.count==0||indexPath.row>self.autoCompleteSuggestions.count-1) {
+        static NSString *SearchingCellIdentifier = @"SearchingCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SearchingCellIdentifier];;
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SearchingCellIdentifier];
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            activityIndicator.tag = 90;
+            [cell.contentView addSubview:activityIndicator];
+            cell.backgroundColor=[UIColor clearColor];
+        }
+        cell.userInteractionEnabled = NO;
+        UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[cell viewWithTag:90];
+        activityIndicator.center = CGPointMake(CGRectGetMidX(cell.contentView.bounds), CGRectGetMidY(cell.contentView.bounds));
+        [activityIndicator startAnimating];
+        return cell;
+    }else{
     id autoCompleteObject = self.autoCompleteSuggestions[indexPath.row];
     UITableViewCell *cell = nil;
     NSString *cellIdentifier = kDefaultAutoCompleteCellIdentifier;
@@ -235,11 +256,8 @@ static NSString *kDefaultAutoCompleteCellIdentifier = @"_DefaultAutoCompleteCell
     
     
     [self configureCell:cell atIndexPath:indexPath withAutoCompleteString:suggestedString descriptionTitle:descriptionTitle];
-    
-    
-    
-    
     return cell;
+    }
 }
 
 - (UITableViewCell *)autoCompleteTableViewCellWithReuseIdentifier:(NSString *)identifier
